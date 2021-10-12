@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+<style>
+    input {
+        width: 200px;
+    }
+
+    #movies {
+        height: 200px;
+        width: 206px;
+        border: 1px solid black;
+        overflow: scroll;
+        border-top: none;
+    }
+    #main{
+        margin-left: 40%;
+        position: absolute;
+    }
+    #trends{
+       
+        margin-left: 80%;
+        font-weight: bold;
+        font-size: 30px;
+        color: brown;
+          cursor: pointer;
+    }
+
+</style>
+
+<body>
+    <div onclick="gototrends()" id="trends">
+        <h4>Trending</h4>
+    </div>
+    <div id="main">
+        <h2>Search your Favourite movie</h2>
+    <input oninput="debounce(main, 1000)" type="text" placeholder="Enter movie name" id="movie">
+
+
+    <div id="movies"></div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    var timerId;
+
+    var movies_div = document.getElementById("movies")
+    movies_div.style.display = "none"
+    async function searchMovies(moviename) {
+        try {
+
+            let res = await fetch('http://www.omdbapi.com/?&apikey=d806bd70&s=' + moviename);
+            var data = await res.json();
+            return data;
+        } catch (e) {
+            console.log("e", e)
+        }
+    }
+
+
+    function appendmovies(movies) {
+        if (movies == undefined) {
+            return false;
+        }
+        movies_div.innerHTML = null
+        movies_div.style.display = "block"
+        movies.forEach(function (movie) {
+            let p = document.createElement("p");
+            p.innerText = movie.Title;
+            
+            p.addEventListener("click", sendpage);
+
+            movies_div.append(p);
+                function sendpage(event) {
+                    addtoCart(movie)
+                console.log(movie)
+                 window.location.href = "newpage.html"
+                }
+        })
+        
+    }
+
+
+
+    async function main() {
+        let name = document.getElementById("movie").value;
+
+        if (name.length < 3) {
+            return false;
+        }
+        let res = await searchMovies(name)
+
+        let movies_data = res.Search;
+       
+        appendmovies(movies_data);
+
+    }
+
+    function debounce(func, delay) {
+        //func = main
+        //ave - settimeout - func - main - searchmovies("ave");
+        //aven - clear the prev timeout - settimeout - func - main - searchmovies("aven");
+
+        if (timerId) {
+            clearTimeout(timerId)
+        }
+
+
+        timerId = setTimeout(function () {
+            func();
+        }, delay);
+    }
+
+      if (localStorage.getItem("cart") === null) {
+      localStorage.setItem("cart", JSON.stringify([]));
+      }
+
+    function addtoCart(p) {
+        console.log(p)
+        let products_cart = JSON.parse(localStorage.getItem("cart"));
+
+        products_cart.push(p);
+        localStorage.setItem("cart", JSON.stringify(products_cart));
+    }
+
+    function gototrends(){
+        window.location.href = "trending.html"
+    }
+</script>
+

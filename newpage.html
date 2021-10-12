@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Movie</h1>
+    <div id="movieinfo">
+    </div>
+</body>
+</html>
+
+<script>
+    var parent = document.getElementById("movieinfo");
+    var carti = JSON.parse(localStorage.getItem("cart"));
+
+
+    function showProducts(d) {
+        carti.forEach(function (product) {
+               parent.innerHTML = null
+            let div = document.createElement("div");
+            let img = document.createElement("img");
+
+            img.src = product.Poster;
+           
+            let product_price = document.createElement("p");
+            product_price.textContent = product.Title;
+          
+
+            let product_name = document.createElement("p");
+            product_name.textContent = product.Year;
+         
+
+
+            div.append(img, product_name, product_price)
+
+            parent.append(div);
+
+        })
+    }
+    showProducts()
+    
+</script>
