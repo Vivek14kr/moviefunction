@@ -20,31 +20,36 @@
         overflow: scroll;
         border-top: none;
     }
-    #main{
+
+    #main {
         margin-left: 40%;
         position: absolute;
     }
-    #trends{
-       
+
+    #trends {
+
         margin-left: 80%;
         font-weight: bold;
         font-size: 30px;
         color: brown;
-          cursor: pointer;
+        cursor: pointer;
     }
-
+    #username{
+       color: black;
+    }
 </style>
 
-<body>
+<body onload="name()">
+    <p id="username"></p>
     <div onclick="gototrends()" id="trends">
         <h4>Trending</h4>
     </div>
     <div id="main">
         <h2>Search your Favourite movie</h2>
-    <input oninput="debounce(main, 1000)" type="text" placeholder="Enter movie name" id="movie">
+        <input oninput="debounce(main, 1000)" type="text" placeholder="Enter movie name" id="movie">
 
 
-    <div id="movies"></div>
+        <div id="movies"></div>
     </div>
 </body>
 
@@ -52,7 +57,12 @@
 
 <script>
     var timerId;
+    var username = document.getElementById("username")
+    var cat = JSON.parse(localStorage.getItem("cat"));
 
+    function name() {
+        username.innerText = "Welcome " + cat[cat.length - 1]
+    }
     var movies_div = document.getElementById("movies")
     movies_div.style.display = "none"
     async function searchMovies(moviename) {
@@ -76,17 +86,18 @@
         movies.forEach(function (movie) {
             let p = document.createElement("p");
             p.innerText = movie.Title;
-            
+
             p.addEventListener("click", sendpage);
 
             movies_div.append(p);
-                function sendpage(event) {
-                    addtoCart(movie)
+
+            function sendpage(event) {
+                addtoCart(movie)
                 console.log(movie)
-                 window.location.href = "newpage.html"
-                }
+                window.location.href = "newpage.html"
+            }
         })
-        
+
     }
 
 
@@ -100,7 +111,7 @@
         let res = await searchMovies(name)
 
         let movies_data = res.Search;
-       
+
         appendmovies(movies_data);
 
     }
@@ -120,9 +131,9 @@
         }, delay);
     }
 
-      if (localStorage.getItem("cart") === null) {
-      localStorage.setItem("cart", JSON.stringify([]));
-      }
+    if (localStorage.getItem("cart") === null) {
+        localStorage.setItem("cart", JSON.stringify([]));
+    }
 
     function addtoCart(p) {
         console.log(p)
@@ -132,8 +143,7 @@
         localStorage.setItem("cart", JSON.stringify(products_cart));
     }
 
-    function gototrends(){
+    function gototrends() {
         window.location.href = "trending.html"
     }
 </script>
-
